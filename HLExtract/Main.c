@@ -68,7 +68,7 @@ hlUInt16 GetColor();
 hlVoid SetColor(hlUInt16 uiColor);
 hlVoid Print(hlUInt16 uiColor, const hlChar *lpFormat, ...);
 hlVoid PrintUsage();
-hlVoid List(FILE *pFile, HLDirectoryItem *pItem, hlBool bListFolders, hlBool bListFiles);
+hlVoid List(FILE *pFile, HLDirectoryItem *pItem, hlBool bListFolders, hlBool bListFiles, hlBool bDisplaySize);
 hlVoid ProgressStart();
 hlVoid ProgressUpdate(hlULongLong uiBytesDone, hlULongLong uiBytesTotal);
 hlVoid ExtractItemStartCallback(HLDirectoryItem *pItem);
@@ -107,6 +107,7 @@ int main(hlInt argc, hlChar* argv[])
 	hlBool bList = hlFalse;
 	hlBool bListFolders = hlFalse;
 	hlBool bListFiles = hlFalse;
+	hlBool bDisplaySize = hlFalse;
 	FILE *pFile = 0;
 
 	hlBool bConsoleMode = hlFalse;
@@ -211,15 +212,22 @@ int main(hlInt argc, hlChar* argv[])
 
 				if(stricmp(argv[i], "-l") == 0 || stricmp(argv[i], "--list") == 0)
 				{
-					// By default list everything.
+					// By default list everything except the files size.
 					bListFolders = hlTrue;
 					bListFiles = hlTrue;
+					bDisplaySize = hlFalse;
 				}
 				else
 				{
 					// List folders and files if specified.
 					bListFolders = strcspn(argv[i], "dD") != strlen(argv[i]);
 					bListFiles = strcspn(argv[i], "fF") != strlen(argv[i]);
+					bDisplaySize = strcspn(argv[i], "sS") != strlen(argv[i]);
+					// case where user use -ls, list everything
+					if (!bListFolders && !bListFiles) {
+						bListFolders = hlTrue;
+						bListFiles = hlTrue;
+					}
 				}
 
 				// Check to see if we need to dump our list to a file.
@@ -481,7 +489,7 @@ int main(hlInt argc, hlChar* argv[])
 			}
 		}
 
-		List(pFile, hlPackageGetRoot(), bListFolders, bListFiles);
+		List(pFile, hlPackageGetRoot(), bListFolders, bListFiles, bDisplaySize);
 
 		if(lpList != 0)
 		{
@@ -630,7 +638,7 @@ hlVoid PrintUsage()
 #endif
 }
 
-hlVoid List(FILE *pFile, HLDirectoryItem *pItem, hlBool bListFolders, hlBool bListFiles)
+hlVoid List(FILE *pFile, HLDirectoryItem *pItem, hlBool bListFolders, hlBool bListFiles, hlBool bDisplaySize)
 {
 	hlUInt i, uiItemCount;
 	hlChar lpPath[512] = "";
@@ -647,14 +655,21 @@ hlVoid List(FILE *pFile, HLDirectoryItem *pItem, hlBool bListFolders, hlBool bLi
 		uiItemCount = hlFolderGetCount(pItem);
 		for(i = 0; i < uiItemCount; i++)
 		{
-			List(pFile, hlFolderGetItem(pItem, i), bListFolders, bListFiles);
+			List(pFile, hlFolderGetItem(pItem, i), bListFolders, bListFiles, bDisplaySize);
 		}
 		break;
 	case HL_ITEM_FILE:
 		if(bListFiles)
 		{
 			hlItemGetPath(pItem, lpPath, sizeof(lpPath));
-			fprintf(pFile, "%s\n", lpPath);
+			if (bDisplaySize) {
+				hlUInt uiSize = 0;
+				hlItemGetSize(pItem, &uiSize);
+				fprintf(pFile, "%s (size: %d)\n", lpPath, uiSize);
+			}
+			else {
+				fprintf(pFile, "%s\n", lpPath);
+			}
 		}
 		break;
 	}
