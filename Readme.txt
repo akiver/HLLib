@@ -25,6 +25,8 @@ CREDITS GOES TO ITS ORIGINAL AUTHOR RYAN "NEMESIS" GREGG.
 5. Start the "HLLib.sln" solution from the "vs14" folder
 6. Build HLLib
 
+Note: if you are building it for the x64 platform, you will have to build masmx64 by running the bld_ml64.bat script (available in the zlib archive) from the MASM command line.
+
 ================================
 ================================
  HLLib BY: RYAN "NEMESIS" GREGG
