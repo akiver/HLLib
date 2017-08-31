@@ -1,3 +1,30 @@
+=================
+=================
+ ABOUT THIS FORK
+=================
+=================
+
+THIS IS A FORK OF HLLib version 2.4.6.
+THE ORIGINAL SOURCE CODE IS AVAILABLE IN THE ZIP ARCHIVE THAT YOU CAN DOWNLOAD FROM THE OFFICIAL WEBSITE (http://nemesis.thewavelength.net/index.php?c=108#p108).
+SINCE THERE IS NO OFFICIAL REPOSITORY, I USE THIS ONE TO ADD THINGS THAT I PERSONALLY NEED.
+
+CREDITS GOES TO ITS ORIGINAL AUTHOR RYAN "NEMESIS" GREGG.
+
+=======
+=======
+ BUILD
+=======
+=======
+
+!! Only tested with Visual Studio 2017 !!
+
+1. Download / clone the repository
+2. Download the zlib source code archive (https://zlib.net/)
+3. Extract it in "vendor" folder and rename the folder as "zlib"
+4. Start "zlibvc.sln" and build the project "zlibstat" in your desired platform
+5. Start the "HLLib.sln" solution from the "vs14" folder
+6. Build HLLib
+
 ================================
 ================================
  HLLib BY: RYAN "NEMESIS" GREGG
@@ -56,7 +83,7 @@ Correct HLExtract usage:
  -d <path>           (Destination extraction directory.)
  -e <itempath>       (Item in package to extract.)
  -t <itempath>       (Item in package to validate.)
- -l[d][f] [filepath] (List the contents of the package.)
+ -l[d][f][s] [filepath] (List the contents of the package.)
  -f                  (Defragment package.)
  -c                  (Console mode.)
  -s                  (Silent mode.)
@@ -71,6 +98,7 @@ Example HLExtract usage:
 HLExtract.exe -p "C:\half-life.gcf" -d "C:\backup" -e "root\valve\models" -e "root\valve\config.cfg"
 HLExtract.exe -p "C:\half-life.gcf" -c -m -q -v
 HLExtract.exe -p "C:\half-life.gcf" -lf "C:\half-life.txt" -m -s
+HLExtract.exe -p "C:\half-life.gcf" -ls "C:\half-life.txt"
 HLExtract.exe -p "C:\half-life.gcf" -m -f
 
 Console Commands (Interactive console mode):
